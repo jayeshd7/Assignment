@@ -10,17 +10,61 @@ services:
     ports:
       - 8002:8000
     environment:
-      - DATABASE_URL=postgresql://fastapi:fastapi@db/fastapi
+      - DATABASE_URL=postgresql://jayeshdalal:test@assignementDb/assignmnet
+      - DB_USER=jayeshdalal
+      - DB_PASSWORD=test
+      - DB_NAME=assignmnet
+      - DB_HOST=assignementDb
+      - KAFKA_BOOTSTRAP_SERVER=kafka:29092
+    networks:
+      - assignment
 
   db:
     image: postgres:12.1-alpine
-    container_name: db
+    container_name: assignementDb
     volumes:
       - postgres_data:/var/lib/postgresql/data/
     environment:
-      - POSTGRES_USER=fastapi
-      - POSTGRES_PASSWORD=fastapi
-      - POSTGRES_DB=fastapi
+      - POSTGRES_USER=jayeshdalal
+      - POSTGRES_PASSWORD=test
+      - POSTGRES_DB=assignmnet
+    networks:
+      - assignment
+
+  kafdrop:
+    image: obsidiandynamics/kafdrop
+    restart: unless-stopped
+    ports:
+      - "9000:9000"
+    environment:
+      KAFKA_BROKERCONNECT: "kafka:29092"
+      JVM_OPTS: "-Xms16M -Xmx48M -Xss180K -XX:-TieredCompilation -XX:+UseStringDeduplication -noverify"
+    depends_on:
+      - "kafka"
+    networks:
+      - assignment
+
+  kafka:
+    image: obsidiandynamics/kafka
+    restart: unless-stopped
+    ports:
+      - "2181:2181"
+      - "9092:9092"
+    environment:
+      KAFKA_LISTENERS: "INTERNAL://:29092,EXTERNAL://:9092"
+      KAFKA_ADVERTISED_LISTENERS: "INTERNAL://kafka:29092,EXTERNAL://localhost:9092"
+      KAFKA_LISTENER_SECURITY_PROTOCOL_MAP: "INTERNAL:PLAINTEXT,EXTERNAL:PLAINTEXT"
+      KAFKA_INTER_BROKER_LISTENER_NAME: "INTERNAL"
+      KAFKA_ZOOKEEPER_SESSION_TIMEOUT: "6000"
+      KAFKA_RESTART_ATTEMPTS: "10"
+      KAFKA_RESTART_DELAY: "5"
+      ZOOKEEPER_AUTOPURGE_PURGE_INTERVAL: "0"
+    networks:
+      - assignment
 
 volumes:
   postgres_data:
+
+networks:
+    assignment:
+      driver: bridge

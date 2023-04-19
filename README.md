@@ -1,15 +1,15 @@
-# fastapi-example [![CircleCI](https://circleci.com/gh/marciovrl/fastapi-example.svg?style=svg)](https://circleci.com/gh/marciovrl/fastapi-example)
+# fastapi-example 
 
 A simple example of using Fast API in Python.
 
 ## Preconditions:
 
-- Python 3
+- Python3
 
 ## Clone the project
 
 ```
-git clone https://github.com/marciovrl/fastapi-example.git
+https://github.com/jayeshd7/Assignment
 ```
 
 ## Run local
@@ -37,7 +37,7 @@ pytest app/test.py
 ### Run server
 
 ```
-docker-compose up -d --build
+docker-compose up -d 
 ```
 
 ### Run test
@@ -56,4 +56,18 @@ http://127.0.0.1:8000/docs
 
 ```
 docker-compose exec db psql --username=fastapi --dbname=fastapi_dev
+```
+
+### Run Unit Test cases
+```
+pytest -v
+```
+
+### safe to put : kafka & kafdrop up & down locally
+
+```
+docker-compose --file kafka-compose.yml up -d
+docker-compose --file kafka-compose.yml down
+
+
 ```

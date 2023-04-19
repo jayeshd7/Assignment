@@ -1,4 +1,4 @@
-
+from threading import Thread
 
 from fastapi import FastAPI, Request, status
 from fastapi.responses import JSONResponse
@@ -10,10 +10,16 @@ from app.db.models import UserDetails, Response, Error
 from app.exception.data_not_found import DataNotFound
 import logging
 
+from app.kafka.com_persistance_test_listner import topic_subscriber
+from app.kafka.kafka import produce_message
+from multiprocessing import Process
+
 app = FastAPI()
 
-def response():
-    return "It's working ✨"
+t1 = Thread(target=topic_subscriber, daemon=True)
+t1.start()
+
+
 
 @app.exception_handler(DataNotFound)
 async def data_not_found_exception(request: Request, exc: DataNotFound):
@@ -40,3 +46,4 @@ def create_new_user(payload: UserDetails):
 async def read_alternatives(user_id: int):
     response = Response(status=True, data=api.get_user_by_id(user_id))
     return response
+

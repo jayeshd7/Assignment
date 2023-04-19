@@ -1,24 +1,27 @@
 # pull official base image
-FROM python:3.8.1-alpine
+FROM ubuntu:22.04
 
 # set work directory
-WORKDIR /src
+WORKDIR /assignment
 
 # set environment variables
 ENV PYTHONDONTWRITEBYTECODE 1
 ENV PYTHONUNBUFFERED 1
 
 # copy requirements file
-COPY ./requirements.txt /src/requirements.txt
+
+COPY ./requirements.txt /assignment/requirements.txt
 
 # install dependencies
-RUN set -eux \
-    && apk add --no-cache --virtual .build-deps build-base \
-    libressl-dev libffi-dev gcc musl-dev python3-dev \
-    postgresql-dev \
-    && pip install --upgrade pip setuptools wheel \
-    && pip install -r /src/requirements.txt \
+RUN apt-get update && \
+    apt-get install -y --no-install-recommends gcc git libssl-dev g++ make python3-dev python3-pip \
+   # && pip3 install --upgrade pip3 setuptools wheel \
+    && pip3 install -r /assignment/requirements.txt \
     && rm -rf /root/.cache/pip
 
 # copy project
-COPY . /src/
+COPY app/ /assignment/app
+RUN ls -latr /assignment
+
+# execute command
+CMD ["uvicorn", "app.main:app", "--reload", "--host", "0.0.0.0", "--port", "8080"]

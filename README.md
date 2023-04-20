@@ -2,9 +2,18 @@
 
 A simple example of using Fast API in Python.
 
-## Preconditions:
+## Component used:
 
 - Python3
+- kafka
+- Postgres
+- docker
+- kafdrop
+- swagger
+- FastAPI
+- Locust(Performance measurment)
+
+
 
 ## Clone the project
 
@@ -69,5 +78,20 @@ pytest -v
 docker-compose --file kafka-compose.yml up -d
 docker-compose --file kafka-compose.yml down
 
+
+```
+
+### down the docker compose
+
+```
+docker comose down
+```
+
+### Run Performance Test using locust & verify result
+
+```
+ locust -f api_performance.py
+
+ http://0.0.0.0:8089 
 
 ```
